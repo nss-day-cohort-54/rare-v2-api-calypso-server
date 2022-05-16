@@ -1,0 +1,35 @@
+[
+    {
+        "model": "rarev2api.rareuser",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "bio": "first person",
+            "profile_image_url": "",
+            "created_on": "2022-05-16 11:33:31.353462",
+            "active": true
+        }
+    },
+    {
+        "model": "rarev2api.rareuser",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "bio": "second person",
+            "profile_image_url": "",
+            "created_on": "2022-05-18 11:33:31.353462",
+            "active": true
+        }
+    },
+    {
+        "model": "rarev2api.rareuser",
+        "pk": 3,
+        "fields": {
+            "user": 3,
+            "bio": "third person",
+            "profile_image_url": "",
+            "created_on": "2022-05-20 11:33:31.353462",
+            "active": true
+        }
+    }
+]

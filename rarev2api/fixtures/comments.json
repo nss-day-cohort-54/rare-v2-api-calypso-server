@@ -1,0 +1,34 @@
+[
+    {
+        "model": "rarev2api.comment",
+        "pk": 1,
+        "fields": {
+            "post": 1,
+            "author": 1,
+            "content": "First comment",
+            "created_on": "2022-05-16 11:33:31.353462"
+        }
+    },
+    {
+        "model": "rarev2api.comment",
+        "pk": 2,
+        "fields": {
+            "post": 1,
+            "author": 2,
+            "content": "second comment",
+            "created_on": "2022-05-10 11:33:31.353462"
+        }
+    },
+    {
+        "model": "rarev2api.comment",
+        "pk": 3,
+        "fields": {
+            "post": 1,
+            "author": 1,
+            "content": "third comment",
+            "created_on": "2022-05-17 11:33:31.353462"
+        }
+    }
+    
+
+]
