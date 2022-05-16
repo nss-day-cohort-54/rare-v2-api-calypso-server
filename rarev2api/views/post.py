@@ -55,7 +55,17 @@ class PostView(ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-        
+    
+    def destroy(self, request, pk):
+        """Handle DELETE requests
+
+        Args:
+            Return -- 204 No Content status code
+        """
+        post = Post.objects.get(pk=pk)
+        post.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+                
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts
     """
