@@ -22,7 +22,11 @@ from rarev2api.views import PostView
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'posts', PostView, 'post')
 
+from rarev2api.views.auth import login_user, register_user
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login', login_user),
+    path('register', register_user),
     path('', include(router.urls))
 ]
