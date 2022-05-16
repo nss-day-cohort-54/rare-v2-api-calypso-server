@@ -1,0 +1,23 @@
+[
+    {
+        "model": "rarev2api.tag",
+        "pk": 1,
+        "fields": {
+           "label": "tag 1"
+        }
+    },
+    {
+        "model": "rarev2api.tag",
+        "pk": 2,
+        "fields": {
+           "label": "tag 2"
+        }
+    },
+    {
+        "model": "rarev2api.tag",
+        "pk": 3,
+        "fields": {
+           "label": "tag 3"
+        }
+    }
+]

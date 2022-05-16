@@ -1,0 +1,26 @@
+[
+    {
+        "model": "rarev2api.reaction",
+        "pk": 1,
+        "fields": {
+            "label": "first reaction",
+            "image_url": ""
+        }
+    },
+    {
+        "model": "rarev2api.reaction",
+        "pk": 2,
+        "fields": {
+            "label": "second reaction",
+            "image_url": ""
+        }
+    },
+    {
+        "model": "rarev2api.reaction",
+        "pk": 3,
+        "fields": {
+            "label": "third reaction",
+            "image_url": ""
+        }
+    }
+]

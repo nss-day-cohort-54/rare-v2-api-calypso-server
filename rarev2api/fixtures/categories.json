@@ -1,0 +1,23 @@
+[
+    {
+        "model": "rarev2api.category",
+        "pk": 1,
+        "fields": {
+            "label": "category 1"
+        }
+    },
+    {
+        "model": "rarev2api.category",
+        "pk": 2,
+        "fields": {
+            "label": "category 2"
+        }
+    },
+    {
+        "model": "rarev2api.category",
+        "pk": 3,
+        "fields": {
+            "label": "category 3"
+        }
+    }
+]

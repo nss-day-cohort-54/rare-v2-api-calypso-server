@@ -1,0 +1,44 @@
+[
+    {
+        "model": "rarev2api.post",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "category": 1,
+            "title": "title 1",
+            "publication_date": "2022-05-16 11:33:31.353462",
+            "image_url": "https://media.istockphoto.com/photos/frustrated-young-child-sulking-with-crossed-arms-and-dirty-look-picture-id475710000?k=20&m=475710000&s=612x612&w=0&h=-XJ5IojQ5cFlYtUPbC5SNWal5eqzE3DRiBDf2hljfO0=",
+            "content": "This is an angry image",
+            "approved": true,
+            "tags": [2,3]
+        }
+    },
+    {
+        "model": "rarev2api.post",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "category": 2,
+            "title": "title 2",
+            "publication_date": "2022-05-20 11:33:31.353462",
+            "image_url": "https://images.pexels.com/photos/3777568/pexels-photo-3777568.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "content": "This is image",
+            "approved": true,
+            "tags": [1,2]
+        }
+    },
+    {
+        "model": "rarev2api.post",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "category": 1,
+            "title": "title 3",
+            "publication_date": "2022-05-10 11:33:31.353462",
+            "image_url": "https://images.pexels.com/photos/783941/pexels-photo-783941.jpeg?cs=srgb&dl=pexels-mohamed-abdelghaffar-783941.jpg&fm=jpg",
+            "content": "This is another angry image",
+            "approved": true,
+            "tags": [1]
+        }
+    }
+]

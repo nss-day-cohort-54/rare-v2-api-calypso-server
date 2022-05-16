@@ -1,0 +1,32 @@
+[
+    {
+        "model": "rarev2api.subscription",
+        "pk": 1,
+        "fields": {
+            "follower": 1,
+            "author": 2,
+            "created_on": "2022-05-16 11:33:31.353462",
+            "ended_on": "2022-05-17 11:33:31.353462"
+        }
+    },
+    {
+        "model": "rarev2api.subscription",
+        "pk": 2,
+        "fields": {
+            "follower": 2,
+            "author": 1,
+            "created_on": "2022-05-16 11:33:31.353462",
+            "ended_on": "2022-05-17 11:33:31.353462"
+        }
+    },
+    {
+        "model": "rarev2api.subscription",
+        "pk": 3,
+        "fields": {
+            "follower": 3,
+            "author": 2,
+            "created_on": "2022-05-16 11:33:31.353462",
+            "ended_on": "2022-05-17 11:33:31.353462"
+        }
+    }
+]
