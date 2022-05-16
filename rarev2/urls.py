@@ -10,7 +10,6 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'categories', CategoryView, 'category')
 router.register(r'posts', PostView, 'post')
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login', login_user),
