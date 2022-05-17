@@ -16,6 +16,13 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized post
         """
+        
+        post = Post.objects.get(pk = pk)
+        
+        
+        
+        
+        
         try:
             post = Post.objects.get(pk=pk)
             serializer = PostSerializer(post)
@@ -90,7 +97,7 @@ class PostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags')
+        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments')
         depth =  1
 
 class CreatePostSerializer(serializers.ModelSerializer):
