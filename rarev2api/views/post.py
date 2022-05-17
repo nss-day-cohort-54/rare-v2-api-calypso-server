@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import serializers, status
 from rarev2api.models import Post
 from rarev2api.models import RareUser
+from django.db.models import Q 
 
 class PostView(ViewSet):
     """Rare post view"""
@@ -15,6 +16,13 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized post
         """
+        
+        post = Post.objects.get(pk = pk)
+        
+        
+        
+        
+        
         try:
             post = Post.objects.get(pk=pk)
             serializer = PostSerializer(post)
@@ -28,7 +36,25 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized list of posts
         """
+        order_by_category = self.request.query_params.get('category', None)
+        order_by_tag = self.request.query_params.get('tag_id', None)
+        search_text_title = self.request.query_params.get('title', None)
         posts = Post.objects.all()
+        if order_by_category is not None:
+            # use the order by function to sort the posts
+            posts = Post.objects.get(pk=request.category.pk).order_by(f'{order_by_category}')
+        if order_by_tag is not None:
+            # use the order by function to sort the posts
+            posts = Post.objects.get(pk=request.tag.pk).order_by(f'{order_by_tag}')
+        else:
+            # other wise return all the posts
+            # we run this second to make sure we can sort the posts on page load
+            posts = Post.objects.all()
+        if search_text_title is not None:
+            # filter the game titles, descripts, and/or designers that contain our text from param
+            posts = Post.objects.filter(
+                Q(title__contains=search_text_title)
+            )
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
     
@@ -71,7 +97,7 @@ class PostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags')
+        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments')
         depth =  1
 
 class CreatePostSerializer(serializers.ModelSerializer):
