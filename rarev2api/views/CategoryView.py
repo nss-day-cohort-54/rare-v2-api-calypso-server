@@ -42,6 +42,15 @@ class CategoryView(ViewSet):
         category = Category.objects.get(pk=pk)
         category.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    def update(self, request, pk):
+        """Handle PUT requests"""
+        
+        category = Category.objects.get(pk=pk)
+        serializer = CreateCategorySerializer(category, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
         
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
