@@ -42,10 +42,10 @@ class PostView(ViewSet):
         posts = Post.objects.all()
         if order_by_category is not None:
             # use the order by function to sort the posts
-            posts = Post.objects.get(pk=request.category.pk).order_by(f'{order_by_category}')
+            posts = Post.objects.all().order_by(f'{order_by_category}')
         if order_by_tag is not None:
             # use the order by function to sort the posts
-            posts = Post.objects.get(pk=request.tag.pk).order_by(f'{order_by_tag}')
+            posts = Post.objects.all().order_by(f'{order_by_tag}')
         else:
             # other wise return all the posts
             # we run this second to make sure we can sort the posts on page load
