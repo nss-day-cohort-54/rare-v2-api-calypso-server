@@ -12,6 +12,8 @@ from rarev2api.models.comment import Comment
 from rarev2api.views.comment import CommentSerializer 
 
 
+from django.db.models import Q 
+from django.contrib.auth.models import User
 
 class PostView(ViewSet):
     """Rare post view"""
@@ -108,10 +110,24 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         post.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'is_staff')
+        
+class RareUserSerializer(serializers.ModelSerializer):
+    user= UserSerializer()
+    
+    class Meta:
+        model = RareUser
+        fields = ('id', 'bio', 'profile_image_url', 'created_on', 'active', 'user')
+        depth = 1  
                 
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts
     """
+    user = RareUserSerializer()
     class Meta:
         model = Post
         fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments')

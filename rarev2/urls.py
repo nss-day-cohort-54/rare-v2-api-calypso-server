@@ -18,7 +18,11 @@ from django.contrib import admin
 from django.conf.urls import include
 from django.urls import path
 from rest_framework import routers
+<<<<<<< HEAD
 from rarev2api.views.comment import CommentView
+=======
+from rarev2api.views.RareUserView import RareUserView
+>>>>>>> main
 from rarev2api.views.tag import TagView
 from rarev2api.views.auth import login_user, register_user
 from rarev2api.views import PostView
@@ -28,7 +32,11 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'tags', TagView, 'tag'),
 router.register(r'categories', CategoryView, 'category')
 router.register(r'posts', PostView, 'post')
+<<<<<<< HEAD
 router.register(r'comments', CommentView, 'comment')
+=======
+router.register(r'users', RareUserView, 'user')
+>>>>>>> main
 
 urlpatterns = [
     path('admin/', admin.site.urls),
