@@ -2,6 +2,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
+from rarev2api.models.post import Post
 from rarev2api.models.rareuser import RareUser
 from django.contrib.auth.models import User
 
@@ -35,7 +36,8 @@ class RareUserView(ViewSet):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'is_staff', 'is_active')
+        fields = ('id', 'username', 'first_name', 'last_name', 'is_staff', 'is_active', 'email')
+
 
         
 class RareUserSerializer(serializers.ModelSerializer):

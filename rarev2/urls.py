@@ -28,7 +28,7 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'tags', TagView, 'tag'),
 router.register(r'categories', CategoryView, 'category')
 router.register(r'posts', PostView, 'post')
-router.register(r'rareusers', RareUserView, 'rareuser')
+router.register(r'users', RareUserView, 'user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
