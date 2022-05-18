@@ -44,6 +44,8 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized list of posts
         """
+        list_by_user = self.request.query_params.get('user_id', None)
+        
         order_by_category = self.request.query_params.get('category', None)
         order_by_tag = self.request.query_params.get('tag_id', None)
         search_text_title = self.request.query_params.get('title', None)
@@ -55,6 +57,10 @@ class PostView(ViewSet):
         elif order_by_tag is not None:
             # use the order by function to sort the posts
             posts = Post.objects.filter(tags__id=order_by_tag)
+            
+        elif list_by_user is not None:
+            posts = Post.object.filter(user = request.auth.user)
+            
         else:
             # other wise return all the posts
             # we run this second to make sure we can sort the posts on page load
