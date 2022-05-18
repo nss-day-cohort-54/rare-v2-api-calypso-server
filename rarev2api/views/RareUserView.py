@@ -29,7 +29,8 @@ class RareUserView(ViewSet):
         Returns:
             Response -- JSON serialized list of RareUsers
         """
-        rareUsers = RareUser.objects.all()
+        
+        rareUsers = RareUser.objects.all().order_by('user__username')
         serializer = RareUserSerializer(rareUsers, many=True)
         return Response(serializer.data)
         
