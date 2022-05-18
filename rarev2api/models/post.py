@@ -11,4 +11,9 @@ class Post(models.Model):
     approved = models.BooleanField()
     tags = models.ManyToManyField("Tag", related_name="posts")
 
-    
+    @property
+    def comments(self):
+        return self.__comments
+    @comments.setter
+    def comments(self, value):
+        self.__comments = value
