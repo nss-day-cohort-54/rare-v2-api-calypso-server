@@ -6,6 +6,7 @@ from rest_framework import serializers, status
 from rarev2api.models import Post
 from rarev2api.models import RareUser
 from django.db.models import Q 
+from django.contrib.auth.models import User
 
 class PostView(ViewSet):
     """Rare post view"""
@@ -42,10 +43,11 @@ class PostView(ViewSet):
         posts = Post.objects.all()
         if order_by_category is not None:
             # use the order by function to sort the posts
-            posts = Post.objects.get(pk=request.category.pk).order_by(f'{order_by_category}')
-        if order_by_tag is not None:
+            # instead of using order by to exclude posts that dont have specific category id
+            posts = Post.objects.filter(category__id=order_by_category)
+        elif order_by_tag is not None:
             # use the order by function to sort the posts
-            posts = Post.objects.get(pk=request.tag.pk).order_by(f'{order_by_tag}')
+            posts = Post.objects.filter(tags__id=order_by_tag)
         else:
             # other wise return all the posts
             # we run this second to make sure we can sort the posts on page load
@@ -93,10 +95,24 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         post.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'is_staff')
+        
+class RareUserSerializer(serializers.ModelSerializer):
+    user= UserSerializer()
+    
+    class Meta:
+        model = RareUser
+        fields = ('id', 'bio', 'profile_image_url', 'created_on', 'active', 'user')
+        depth = 1  
                 
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts
     """
+    user = RareUserSerializer()
     class Meta:
         model = Post
         fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments')
