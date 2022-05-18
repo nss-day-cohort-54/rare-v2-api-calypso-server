@@ -66,6 +66,8 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized post
         """
+        
+        
         user = RareUser.objects.get(user=request.auth.user)
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
