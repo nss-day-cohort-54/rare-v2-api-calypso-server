@@ -50,10 +50,11 @@ class PostView(ViewSet):
         posts = Post.objects.all()
         if order_by_category is not None:
             # use the order by function to sort the posts
-            posts = Post.objects.get(pk=request.category.pk).order_by(f'{order_by_category}')
-        if order_by_tag is not None:
+            # instead of using order by to exclude posts that dont have specific category id
+            posts = Post.objects.filter(category__id=order_by_category)
+        elif order_by_tag is not None:
             # use the order by function to sort the posts
-            posts = Post.objects.get(pk=request.tag.pk).order_by(f'{order_by_tag}')
+            posts = Post.objects.filter(tags__id=order_by_tag)
         else:
             # other wise return all the posts
             # we run this second to make sure we can sort the posts on page load
@@ -72,6 +73,8 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized post
         """
+        
+        
         user = RareUser.objects.get(user=request.auth.user)
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -113,5 +116,5 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('category','title','publication_date','image_url','content','approved','tags')
+        fields = ('id', 'category','title','publication_date','image_url','content','approved','tags')
     
