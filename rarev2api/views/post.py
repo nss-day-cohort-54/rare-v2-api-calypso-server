@@ -64,6 +64,8 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized post
         """
+        
+        
         user = RareUser.objects.get(user=request.auth.user)
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -105,5 +107,5 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('category','title','publication_date','image_url','content','approved','tags')
+        fields = ('id', 'category','title','publication_date','image_url','content','approved','tags')
     
