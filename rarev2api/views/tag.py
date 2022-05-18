@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import serializers, status
 from rarev2api.models import Tag
 
+
 class TagView(ViewSet):
     """RareV2 Tag View"""
     
@@ -22,7 +23,7 @@ class TagView(ViewSet):
         Args:
             request (HTTP): the Client's HTTP request
         """
-        tags = Tag.objects.all()
+        tags = Tag.objects.all().order_by('label')
         serializer = TagSerializer(tags, many=True)
         
         return Response(serializer.data)
