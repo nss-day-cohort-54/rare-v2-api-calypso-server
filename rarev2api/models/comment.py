@@ -5,4 +5,3 @@ class Comment(models.Model):
     author = models.ForeignKey("RareUser", on_delete=models.CASCADE)
     content = models.CharField(max_length=199)
     created_on = models.DateTimeField()
-    
