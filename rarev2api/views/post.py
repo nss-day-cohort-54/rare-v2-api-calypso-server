@@ -37,26 +37,32 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized list of posts
         """
-        order_by_category = self.request.query_params.get('category', None)
-        order_by_tag = self.request.query_params.get('tag_id', None)
-        search_text_title = self.request.query_params.get('title', None)
-        posts = Post.objects.all()
-        if order_by_category is not None:
-            # use the order by function to sort the posts
-            # instead of using order by to exclude posts that dont have specific category id
-            posts = Post.objects.filter(category__id=order_by_category)
-        elif order_by_tag is not None:
-            # use the order by function to sort the posts
-            posts = Post.objects.filter(tags__id=order_by_tag)
+        user = RareUser.objects.get(user=request.auth.user)
+        get_by_user = self.request.query_params.get('user_id', None)
+        if get_by_user is not None:
+            posts = Post.objects.filter(user=user)
         else:
-            # other wise return all the posts
-            # we run this second to make sure we can sort the posts on page load
+            # what is the 'none' value in query param tuple
+            order_by_category = self.request.query_params.get('category', None)
+            order_by_tag = self.request.query_params.get('tag_id', None)
+            search_text_title = self.request.query_params.get('title', None)
             posts = Post.objects.all()
-        if search_text_title is not None:
-            # filter the game titles, descripts, and/or designers that contain our text from param
-            posts = Post.objects.filter(
-                Q(title__contains=search_text_title)
-            )
+            if order_by_category is not None:
+                # use the order by function to sort the posts
+                # instead of using order by to exclude posts that dont have specific category id
+                posts = Post.objects.filter(category__id=order_by_category)
+            elif order_by_tag is not None:
+                # use the order by function to sort the posts
+                posts = Post.objects.filter(tags__id=order_by_tag)
+            else:
+                # other wise return all the posts
+                # we run this second to make sure we can sort the posts on page load
+                posts = Post.objects.all()
+            if search_text_title is not None:
+                # filter the game titles, descripts, and/or designers that contain our text from param
+                posts = Post.objects.filter(
+                    Q(title__contains=search_text_title)
+                )
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
     
