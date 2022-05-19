@@ -1,5 +1,5 @@
 """View module for handling requests about posts"""
-from operator import itemgetter
+from operator import itemgetter, truediv
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -29,7 +29,15 @@ class PostView(ViewSet):
         try:
             # get all comments that have matching post id and order them by newest to oldest (- before makes them descending)
             comments = Comment.objects.filter(post = pk).order_by('-created_on')
+            for comment in comments:
+                if comment.author.user == request.auth.user:
+                    print("true")
+                    comment.is_user = True
+                else:
+                    print("false")
+                    comment.is_user = False
             comments = CommentSerializer(comments, many = True)
+            
             post = Post.objects.get(pk = pk)
             serializer = PostSerializer(post)
             post.comments = comments.data
