@@ -1,5 +1,6 @@
 
 from datetime import datetime
+from os import stat
 from xmlrpc.client import DateTime
 from django.db import models
 from django.http import HttpResponseServerError
@@ -22,7 +23,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         
         model = Comment
-        fields = ('id', 'created_on', 'author', 'post', 'content')
+        fields = ('id', 'created_on', 'author', 'post', 'content', 'is_user')
         depth = 1
         
     
@@ -32,6 +33,11 @@ class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('post', 'content', 'author', 'created_on')
+        
+class UpdateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'post', 'content', 'author', 'created_on')
     
     
     
@@ -64,3 +70,13 @@ class CommentView(ViewSet):
         serializer.save()
         
         return Response(None, status= status.HTTP_201_CREATED)
+    
+    
+    def update(self, request, pk):
+        
+        comment = Comment.objects.get(pk=pk)
+        serializer = UpdateCommentSerializer(comment, request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response(None, status=status.HTTP_202_ACCEPTED)
