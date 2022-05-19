@@ -10,14 +10,21 @@ from rest_framework import serializers, status
 
 from rarev2api.models import Comment
 from rarev2api.models import RareUser
+from rarev2api.views.RareUserView import RareUserSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    
+    author = RareUserSerializer()
+    
+    
+    
     class Meta:
         
         model = Comment
         fields = ('id', 'created_on', 'author', 'post', 'content')
         depth = 1
+        
     
         
         
@@ -32,6 +39,7 @@ class CommentView(ViewSet):
     
     
     def retrieve(self, request, pk):
+        
         
         comment = Comment.objects.get(pk = pk)
         
@@ -50,6 +58,7 @@ class CommentView(ViewSet):
     
     def create(self, request):
         request.data['author'] = request.user.id
+        request.data['created_on'] = datetime.now()
         serializer = CreateCommentSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

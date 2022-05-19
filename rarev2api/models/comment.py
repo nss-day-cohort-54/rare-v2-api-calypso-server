@@ -6,4 +6,3 @@ class Comment(models.Model):
     content = models.CharField(max_length=199)
     created_on = models.DateTimeField()
     
-    
