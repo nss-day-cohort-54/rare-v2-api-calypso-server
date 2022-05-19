@@ -3,6 +3,7 @@ from operator import itemgetter
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework import serializers, status
 from rarev2api.models import Post
 from rarev2api.models import RareUser
@@ -25,7 +26,7 @@ class PostView(ViewSet):
             Response -- JSON serialized post
         """
         
-
+        post = Post.objects.get(pk = pk)        
         try:
             # get all comments that have matching post id and order them by newest to oldest (- before makes them descending)
             comments = Comment.objects.filter(post = pk).order_by('-created_on')
@@ -46,48 +47,46 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized list of posts
         """
-        list_by_user = self.request.query_params.get('user_id', None)
-        if list_by_user is not None:
-
-            
-            rare_user = RareUser.objects.get(user = request.auth.user)
-            rare_user = RareUserSerializer(rare_user)
-            print(rare_user.data)
-            posts = Post.objects.filter(user= rare_user.data)
-        
+        get_by_user = self.request.query_params.get('user_id', None)
+        if get_by_user is not None:
+            posts = Post.objects.filter(user_id=get_by_user)
         else:
-            
-        
-        
-            user = RareUser.objects.get(user=request.auth.user)
-            get_by_user = self.request.query_params.get('user_id', None)
-            if get_by_user is not None:
-                posts = Post.objects.filter(user=user)
+            # what is the 'none' value in query param tuple
+            order_by_category = self.request.query_params.get('category', None)
+            order_by_tag = self.request.query_params.get('tag_id', None)
+            search_text_title = self.request.query_params.get('title', None)
+            posts = Post.objects.all()
+            if order_by_category is not None:
+                # use the order by function to sort the posts
+                # instead of using order by to exclude posts that dont have specific category id
+                posts = Post.objects.filter(category__id=order_by_category)
+            elif order_by_tag is not None:
+                # use the order by function to sort the posts
+                posts = Post.objects.filter(tags__id=order_by_tag)
+                
             else:
-                # what is the 'none' value in query param tuple
-                order_by_category = self.request.query_params.get('category', None)
-                order_by_tag = self.request.query_params.get('tag_id', None)
-                search_text_title = self.request.query_params.get('title', None)
+                # other wise return all the posts
+                # we run this second to make sure we can sort the posts on page load
                 posts = Post.objects.all()
-                if order_by_category is not None:
-                    # use the order by function to sort the posts
-                    # instead of using order by to exclude posts that dont have specific category id
-                    posts = Post.objects.filter(category__id=order_by_category)
-                elif order_by_tag is not None:
-                    # use the order by function to sort the posts
-                    posts = Post.objects.filter(tags__id=order_by_tag)
-                    
-                else:
-                    # other wise return all the posts
-                    # we run this second to make sure we can sort the posts on page load
-                    posts = Post.objects.all()
-                if search_text_title is not None:
-                    # filter the game titles, descripts, and/or designers that contain our text from param
-                    posts = Post.objects.filter(
-                        Q(title__contains=search_text_title)
-                    )
-            serializer = PostSerializer(posts, many=True)
-            return Response(serializer.data)
+            if search_text_title is not None:
+                # filter the game titles, descripts, and/or designers that contain our text from param
+                posts = Post.objects.filter(
+                    Q(title__contains=search_text_title)
+                )
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+    
+    # we create a custom action method to get posts that belong to the logged in user
+    # set our method to get to retrieve data and our detail to false to return a list instead of single object
+    @action(methods=["get"], detail=False)
+    def getPostForLoggedInUser(self, request):
+        # since we'll get a token from the client we'll check to see what user has that auth token
+        user = RareUser.objects.get(user=request.auth.user)
+        # then we filter posts that have that user's id
+        posts = Post.objects.filter(user=user)
+        # many=True means we're inputing a list which by default is false
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         """Handle POST requests
