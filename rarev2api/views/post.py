@@ -7,12 +7,9 @@ from rest_framework import serializers, status
 from rarev2api.models import Post
 from rarev2api.models import RareUser
 from django.db.models import Q
-
+from rest_framework.decorators import action
 from rarev2api.models.comment import Comment
 from rarev2api.views.comment import CommentSerializer 
-
-
-from django.db.models import Q 
 from django.contrib.auth.models import User
 
 class PostView(ViewSet):
@@ -122,6 +119,17 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         post.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    
+    @action(methods=['put'], detail=True)
+    def updatePostTags(self, request, pk):
+        """Handles updating tags on a single post"""
+        
+        post = Post.objects.get(pk=pk)
+        serializer = CreatePostSerializer(post, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Post tags updated'}, status=status.HTTP_204_NO_CONTENT)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
