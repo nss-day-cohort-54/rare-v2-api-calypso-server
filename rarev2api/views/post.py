@@ -47,10 +47,9 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized list of posts
         """
-        user = RareUser.objects.get(user=request.auth.user)
         get_by_user = self.request.query_params.get('user_id', None)
         if get_by_user is not None:
-            posts = Post.objects.filter(user=user)
+            posts = Post.objects.filter(user_id=get_by_user)
         else:
             # what is the 'none' value in query param tuple
             order_by_category = self.request.query_params.get('category', None)
