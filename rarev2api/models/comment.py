@@ -6,3 +6,10 @@ class Comment(models.Model):
     content = models.CharField(max_length=199)
     created_on = models.DateTimeField()
     
+    
+    @property
+    def is_user(self):
+        return self.__is_user
+    @is_user.setter
+    def is_user(self, value):
+        self.__is_user = value
