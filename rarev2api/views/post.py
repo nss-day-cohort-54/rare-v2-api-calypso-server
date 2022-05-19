@@ -63,6 +63,8 @@ class PostView(ViewSet):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
     
+    # we create a custom action method to get posts that belong to the logged in user
+    # set our method to get to retrieve data and our detail to false to return a list instead of single object
     @action(methods=["get"], detail=False)
     def getPostForLoggedInUser(self, request):
         # since we'll get a token from the client we'll check to see what user has that auth token
