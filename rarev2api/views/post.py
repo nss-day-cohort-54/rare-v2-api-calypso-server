@@ -2,6 +2,7 @@
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework import serializers, status
 from rarev2api.models import Post
 from rarev2api.models import RareUser
@@ -18,12 +19,7 @@ class PostView(ViewSet):
             Response -- JSON serialized post
         """
         
-        post = Post.objects.get(pk = pk)
-        
-        
-        
-        
-        
+        post = Post.objects.get(pk = pk)        
         try:
             post = Post.objects.get(pk=pk)
             serializer = PostSerializer(post)
@@ -37,10 +33,11 @@ class PostView(ViewSet):
         Returns:
             Response -- JSON serialized list of posts
         """
-        user = RareUser.objects.get(user=request.auth.user)
         get_by_user = self.request.query_params.get('user_id', None)
+        # this estimates if the passed in value is a token
+        # anything else is assumed to be an id and thus we filter for the users id
         if get_by_user is not None:
-            posts = Post.objects.filter(user=user)
+            posts = Post.objects.filter(user_id=get_by_user)
         else:
             # what is the 'none' value in query param tuple
             order_by_category = self.request.query_params.get('category', None)
@@ -65,6 +62,16 @@ class PostView(ViewSet):
                 )
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+    
+    @action(methods=["get"], detail=False)
+    def getPostForLoggedInUser(self, request):
+        # since we'll get a token from the client we'll check to see what user has that auth token
+        user = RareUser.objects.get(user=request.auth.user)
+        # then we filter posts that have that user's id
+        posts = Post.objects.filter(user=user)
+        # many=True means we're inputing a list which by default is false
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         """Handle POST requests
