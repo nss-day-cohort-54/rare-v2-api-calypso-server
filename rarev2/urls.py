@@ -24,6 +24,8 @@ from rarev2api.views.tag import TagView
 from rarev2api.views.auth import login_user, register_user
 from rarev2api.views import PostView
 from rarev2api.views.CategoryView import CategoryView
+from django.conf.urls.static import static
+import rarev2.settings as settings
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'tags', TagView, 'tag'),
@@ -37,4 +39,4 @@ urlpatterns = [
     path('login', login_user),
     path('register', register_user),
     path('', include(router.urls))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

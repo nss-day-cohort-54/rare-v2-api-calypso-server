@@ -14,6 +14,9 @@ from rarev2api.models.comment import Comment
 from rarev2api.models.tag import Tag
 from rarev2api.views.comment import CommentSerializer 
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
+import base64
+import uuid
 
 class PostView(ViewSet):
     """Rare post view"""
@@ -104,11 +107,13 @@ class PostView(ViewSet):
             Response -- JSON serialized post
         """
         user = RareUser.objects.get(user=request.auth.user)
-
+        format, imgstr = request.data["image"].split(';base64,')
+        ext = format.split('/')[-1]
+        request.data['image'] = ContentFile(base64.b64decode(imgstr), name=f'{request.data["title"]}-{uuid.uuid4()}.{ext}')
         request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=user)
+        serializer.save(user=user, image=request.data['image'])
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, pk):
@@ -118,10 +123,16 @@ class PostView(ViewSet):
             Response -- 204 No Content status code
         """
         post = Post.objects.get(pk=pk)
+        try:
+            format, imgstr = request.data["image"].split(';base64,')
+            ext = format.split('/')[-1]
+            request.data['image'] = ContentFile(base64.b64decode(imgstr), name=f'{request.data["title"]}-{uuid.uuid4()}.{ext}')
+        except:
+            print("hello")
         request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(post, request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(image=request.data['image'])
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
     
     def destroy(self, request, pk):
@@ -163,7 +174,7 @@ class PostSerializer(serializers.ModelSerializer):
     user = RareUserSerializer()
     class Meta:
         model = Post
-        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments', 'is_user')
+        fields = ('id', 'user','category','title','publication_date','image','content','approved','tags', 'comments', 'is_user')
         depth =  1
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -171,11 +182,11 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image_url','content','approved')
+        fields = ('id', 'category','title','publication_date', 'content','approved')
     
 class UpdatePostSerializer(serializers.ModelSerializer):
     """JSON serializer for updating posts
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image_url','content','approved','tags')
+        fields = ('id', 'category','title','publication_date','content','approved','tags')
