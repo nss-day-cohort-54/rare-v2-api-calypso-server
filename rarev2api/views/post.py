@@ -113,7 +113,7 @@ class PostView(ViewSet):
         request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=user)
+        serializer.save(user=user, image=request.data['image'])
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, pk):
@@ -123,13 +123,16 @@ class PostView(ViewSet):
             Response -- 204 No Content status code
         """
         post = Post.objects.get(pk=pk)
-        format, imgstr = request.data["image"].split(';base64,')
-        ext = format.split('/')[-1]
-        request.data['image'] = ContentFile(base64.b64decode(imgstr), name=f'{request.data["title"]}-{uuid.uuid4()}.{ext}')
+        try:
+            format, imgstr = request.data["image"].split(';base64,')
+            ext = format.split('/')[-1]
+            request.data['image'] = ContentFile(base64.b64decode(imgstr), name=f'{request.data["title"]}-{uuid.uuid4()}.{ext}')
+        except:
+            print("hello")
         request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(post, request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(image=request.data['image'])
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
     
     def destroy(self, request, pk):
@@ -179,11 +182,11 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image','content','approved')
+        fields = ('id', 'category','title','publication_date', 'content','approved')
     
 class UpdatePostSerializer(serializers.ModelSerializer):
     """JSON serializer for updating posts
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image','content','approved','tags')
+        fields = ('id', 'category','title','publication_date','content','approved','tags')
