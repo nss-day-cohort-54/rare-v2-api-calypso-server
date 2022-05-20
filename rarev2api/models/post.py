@@ -24,3 +24,10 @@ class Post(models.Model):
     @is_user.setter
     def is_user(self, value):
         self.__is_user = value
+        
+    @property
+    def user_subscribed(self):
+        return self.__is_user
+    @user_subscribed.setter
+    def user_subscibed(self, value):
+        self.__is_user = value
