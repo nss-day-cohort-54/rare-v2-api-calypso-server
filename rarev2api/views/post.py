@@ -139,7 +139,7 @@ class PostView(ViewSet):
         """Handles updating tags on a single post"""
         
         post = Post.objects.get(pk=pk)
-        serializer = CreatePostSerializer(post, data=request.data)
+        serializer = UpdatePostSerializer(post, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Post tags updated'}, status=status.HTTP_204_NO_CONTENT)
@@ -173,3 +173,9 @@ class CreatePostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'category','title','publication_date','image_url','content','approved')
     
+class UpdatePostSerializer(serializers.ModelSerializer):
+    """JSON serializer for updating posts
+    """
+    class Meta:
+        model = Post
+        fields = ('id', 'category','title','publication_date','image_url','content','approved','tags')
