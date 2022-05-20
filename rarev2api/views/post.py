@@ -8,12 +8,10 @@ from rest_framework import serializers, status
 from rarev2api.models import Post
 from rarev2api.models import RareUser
 from django.db.models import Q
-
+from rest_framework.decorators import action
 from rarev2api.models.comment import Comment
+from rarev2api.models.tag import Tag
 from rarev2api.views.comment import CommentSerializer 
-
-
-from django.db.models import Q 
 from django.contrib.auth.models import User
 
 class PostView(ViewSet):
@@ -26,7 +24,6 @@ class PostView(ViewSet):
             Response -- JSON serialized post
         """
         
-        post = Post.objects.get(pk = pk)        
         try:
             # get all comments that have matching post id and order them by newest to oldest (- before makes them descending)
             comments = Comment.objects.filter(post = pk).order_by('-created_on')
@@ -40,10 +37,14 @@ class PostView(ViewSet):
             comments = CommentSerializer(comments, many = True)
             
             post = Post.objects.get(pk = pk)
+            if post.user.user == request.auth.user:
+                post.is_user = True
             serializer = PostSerializer(post)
             post.comments = comments.data
 
             serializer.data['comments'] = comments.data
+            
+            
             return Response(serializer.data)
         except Post.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
@@ -128,6 +129,17 @@ class PostView(ViewSet):
         post = Post.objects.get(pk=pk)
         post.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+    
+    
+    @action(methods=['put'], detail=True)
+    def updatePostTags(self, request, pk):
+        """Handles updating tags on a single post"""
+        
+        post = Post.objects.get(pk=pk)
+        serializer = CreatePostSerializer(post, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Post tags updated'}, status=status.HTTP_204_NO_CONTENT)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -148,7 +160,7 @@ class PostSerializer(serializers.ModelSerializer):
     user = RareUserSerializer()
     class Meta:
         model = Post
-        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments')
+        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments', 'is_user')
         depth =  1
 
 class CreatePostSerializer(serializers.ModelSerializer):
