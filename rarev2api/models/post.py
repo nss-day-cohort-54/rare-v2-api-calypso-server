@@ -6,7 +6,7 @@ class Post(models.Model):
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     publication_date = models.DateTimeField()
-    image_url = models.TextField()
+    image = models.ImageField()
     content = models.TextField()
     approved = models.BooleanField()
     tags = models.ManyToManyField("Tag", related_name="posts")
