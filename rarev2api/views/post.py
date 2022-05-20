@@ -160,7 +160,7 @@ class PostSerializer(serializers.ModelSerializer):
     user = RareUserSerializer()
     class Meta:
         model = Post
-        fields = ('id', 'user','category','title','publication_date','image_url','content','approved','tags', 'comments', 'is_user')
+        fields = ('id', 'user','category','title','publication_date','image','content','approved','tags', 'comments', 'is_user')
         depth =  1
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -168,5 +168,5 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image_url','content','approved','tags')
+        fields = ('id', 'category','title','publication_date','image','content','approved','tags')
     
