@@ -1,4 +1,5 @@
 """View module for handling requests about posts"""
+from datetime import datetime
 from operator import itemgetter, truediv
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
@@ -103,6 +104,8 @@ class PostView(ViewSet):
             Response -- JSON serialized post
         """
         user = RareUser.objects.get(user=request.auth.user)
+
+        request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
@@ -168,5 +171,5 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image','content','approved','tags')
+        fields = ('id', 'category','title','publication_date','image_url','content','approved')
     
