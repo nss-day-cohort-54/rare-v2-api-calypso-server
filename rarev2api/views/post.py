@@ -123,6 +123,9 @@ class PostView(ViewSet):
             Response -- 204 No Content status code
         """
         post = Post.objects.get(pk=pk)
+        format, imgstr = request.data["image"].split(';base64,')
+        ext = format.split('/')[-1]
+        request.data['image'] = ContentFile(base64.b64decode(imgstr), name=f'{request.data["title"]}-{uuid.uuid4()}.{ext}')
         request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(post, request.data)
         serializer.is_valid(raise_exception=True)
