@@ -118,6 +118,7 @@ class PostView(ViewSet):
             Response -- 204 No Content status code
         """
         post = Post.objects.get(pk=pk)
+        request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(post, request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -137,7 +138,6 @@ class PostView(ViewSet):
     @action(methods=['put'], detail=True)
     def updatePostTags(self, request, pk):
         """Handles updating tags on a single post"""
-        
         post = Post.objects.get(pk=pk)
         serializer = UpdatePostSerializer(post, data=request.data)
         serializer.is_valid(raise_exception=True)
