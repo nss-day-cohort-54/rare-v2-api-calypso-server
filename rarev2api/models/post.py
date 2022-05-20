@@ -17,3 +17,10 @@ class Post(models.Model):
     @comments.setter
     def comments(self, value):
         self.__comments = value
+        
+    @property
+    def is_user(self):
+        return self.__is_user
+    @is_user.setter
+    def is_user(self, value):
+        self.__is_user = value
