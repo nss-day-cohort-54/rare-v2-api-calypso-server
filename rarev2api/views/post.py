@@ -14,6 +14,9 @@ from rarev2api.models.comment import Comment
 from rarev2api.models.tag import Tag
 from rarev2api.views.comment import CommentSerializer 
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
+import base64
+import uuid
 
 class PostView(ViewSet):
     """Rare post view"""
@@ -104,7 +107,9 @@ class PostView(ViewSet):
             Response -- JSON serialized post
         """
         user = RareUser.objects.get(user=request.auth.user)
-
+        format, imgstr = request.data["image"].split(';base64,')
+        ext = format.split('/')[-1]
+        request.data['image'] = ContentFile(base64.b64decode(imgstr), name=f'{request.data["title"]}-{uuid.uuid4()}.{ext}')
         request.data['publication_date'] = datetime.now()
         serializer = CreatePostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -171,5 +176,5 @@ class CreatePostSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Post
-        fields = ('id', 'category','title','publication_date','image_url','content','approved')
+        fields = ('id', 'category','title','publication_date','image','content','approved')
     
